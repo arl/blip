@@ -1,0 +1,6 @@
+github.com/arl/blip v0.0.0-20241110160245-78f8877b4c66 h1:n3T/wtsVaJgvpyvA1mg32Tcof/CMvAZKILQd3XzcEkw=
+github.com/arl/blip v0.0.0-20241110160245-78f8877b4c66/go.mod h1:CHmVA3E+UQd4VD9wZPTs8vcTbcEovXZwNehiF/Ji0Oc=
+github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
+github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
+github.com/veandco/go-sdl2 v0.4.40 h1:fZv6wC3zz1Xt167P09gazawnpa0KY5LM7JAvKpX9d/U=
+github.com/veandco/go-sdl2 v0.4.40/go.mod h1:OROqMhHD43nT4/i9crJukyVecjPNYYuCofep6SNiAjY=
