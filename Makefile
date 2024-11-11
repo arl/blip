@@ -12,7 +12,7 @@ tests: examples
 .PHONY: tests
 
 clean:
-	find . -name out.wav -delete
+	find examples -name out.wav -delete
 	find examples -executable -type f -delete
 
 .PHONY: clean
