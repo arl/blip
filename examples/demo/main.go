@@ -44,8 +44,7 @@ func flushSamples(bl *blip.Buffer, wv *wave.Writer) {
 }
 
 func main() {
-	bl, _ := blip.NewBuffer(sampleRate / 10)
-
+	bl := blip.NewBuffer(sampleRate / 10)
 	bl.SetRates(clockRate, sampleRate)
 
 	// Record output to a wave file

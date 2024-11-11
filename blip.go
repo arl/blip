@@ -1,7 +1,6 @@
 package blip
 
 import (
-	"fmt"
 	"math"
 )
 
@@ -59,36 +58,6 @@ func clamp[T ~int | ~int32 | ~int64](n T) T {
 	return n
 }
 
-func checkAssumptions() error {
-	if (-3 >> 1) != -2 {
-		return fmt.Errorf("right shift must preserve sign")
-	}
-
-	var n int
-	n = maxSample * 2
-	n = clamp(n)
-
-	if n != maxSample {
-		return fmt.Errorf("assertion failed: n should be maxSample(%v), but is %v", maxSample, n)
-	}
-
-	n = minSample * 2
-	n = clamp(n)
-	if n != minSample {
-		return fmt.Errorf("assertion failed: n should be minSample(%v), but is %v", minSample, n)
-	}
-
-	if MaxRatio > timeUnit {
-		return fmt.Errorf("must have MaxRatio <= timeUnit")
-	}
-
-	minusOne := -1
-	if MaxFrame > uint(minusOne)>>timeBits {
-		return fmt.Errorf("must have MaxFrame <= uint(-1)>>timeBits")
-	}
-	return nil
-}
-
 // Buffer is a sample buffer that resamples to output rate and accumulates
 // samples until they're read out.
 type Buffer struct {
@@ -103,14 +72,14 @@ type Buffer struct {
 
 // NewBuffer creates a Buffer that can hold at most nsamples samples. Sets
 // rates so that there are [MaxRatio] clocks per sample.
-func NewBuffer(nsamples int) (*Buffer, error) {
+func NewBuffer(nsamples int) *Buffer {
 	buf := &Buffer{
 		samples: make([]int32, nsamples+bufExtra),
 		factor:  timeUnit / MaxRatio,
 		size:    nsamples,
 	}
 	buf.Clear()
-	return buf, checkAssumptions()
+	return buf
 }
 
 // Clear clears the entire buffer. Afterwards, SamplesAvailable() returns 0.

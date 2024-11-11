@@ -32,10 +32,31 @@ func assert[T comparable](t *testing.T, got, want T) {
 }
 
 func TestAssumptions(t *testing.T) {
-	const blipSize = MaxFrame / 2
+	if (-3 >> 1) != -2 {
+		t.Fatalf("right shift must preserve sign")
+	}
 
-	if _, err := NewBuffer(blipSize); err != nil {
-		t.Fatal(err)
+	var n int
+	n = maxSample * 2
+	n = clamp(n)
+
+	if n != maxSample {
+		t.Fatalf("assertion failed: n should be maxSample(%v), but is %v", maxSample, n)
+	}
+
+	n = minSample * 2
+	n = clamp(n)
+	if n != minSample {
+		t.Fatalf("assertion failed: n should be minSample(%v), but is %v", minSample, n)
+	}
+
+	if MaxRatio > timeUnit {
+		t.Fatalf("must have MaxRatio <= timeUnit")
+	}
+
+	minusOne := -1
+	if MaxFrame > uint(minusOne)>>timeBits {
+		t.Fatalf("must have MaxFrame <= uint(-1)>>timeBits")
 	}
 }
 
@@ -45,7 +66,7 @@ func TestEndFrame(t *testing.T) {
 	const blipSize = MaxFrame / 2
 
 	t.Run("SamplesAvailable", func(t *testing.T) {
-		bl, _ := NewBuffer(blipSize)
+		bl := NewBuffer(blipSize)
 		bl.EndFrame(oversample)
 		assert(t, bl.SamplesAvailable(), 1)
 
@@ -53,7 +74,7 @@ func TestEndFrame(t *testing.T) {
 		assert(t, bl.SamplesAvailable(), 3)
 	})
 	t.Run("SamplesAvailable fractional", func(t *testing.T) {
-		bl, _ := NewBuffer(blipSize)
+		bl := NewBuffer(blipSize)
 		bl.EndFrame(oversample*2 - 1)
 		assert(t, bl.SamplesAvailable(), 1)
 
@@ -61,7 +82,7 @@ func TestEndFrame(t *testing.T) {
 		assert(t, bl.SamplesAvailable(), 2)
 	})
 	t.Run("limits", func(t *testing.T) {
-		bl, _ := NewBuffer(blipSize)
+		bl := NewBuffer(blipSize)
 		bl.EndFrame(0)
 		assert(t, bl.SamplesAvailable(), 0)
 
@@ -74,7 +95,7 @@ func TestClocksNeeded(t *testing.T) {
 	const blipSize = MaxFrame / 2
 
 	t.Run(" ", func(t *testing.T) {
-		bl, _ := NewBuffer(blipSize)
+		bl := NewBuffer(blipSize)
 		assert(t, bl.ClocksNeeded(0), 0*oversample)
 		assert(t, bl.ClocksNeeded(2), 2*oversample)
 
@@ -84,7 +105,7 @@ func TestClocksNeeded(t *testing.T) {
 	})
 
 	t.Run("limits", func(t *testing.T) {
-		bl, _ := NewBuffer(blipSize)
+		bl := NewBuffer(blipSize)
 
 		shouldPanic(t, func() { bl.ClocksNeeded(-1) })
 
@@ -99,7 +120,7 @@ func TestClocksNeeded(t *testing.T) {
 func TestClearBasic(t *testing.T) {
 	const blipSize = MaxFrame / 2
 
-	bl, _ := NewBuffer(blipSize)
+	bl := NewBuffer(blipSize)
 	bl.EndFrame(2*oversample - 1)
 
 	bl.Clear()
@@ -111,7 +132,7 @@ func TestReadSamples(t *testing.T) {
 	const blipSize = MaxFrame / 2
 
 	t.Run("mono", func(t *testing.T) {
-		bl, _ := NewBuffer(blipSize)
+		bl := NewBuffer(blipSize)
 		buf := []int16{-1, -1}
 
 		bl.EndFrame(3*oversample + oversample - 1)
@@ -124,7 +145,7 @@ func TestReadSamples(t *testing.T) {
 	})
 
 	t.Run("stereo", func(t *testing.T) {
-		bl, _ := NewBuffer(blipSize)
+		bl := NewBuffer(blipSize)
 		buf := []int16{-1, -1, -1}
 
 		bl.EndFrame(2 * oversample)
@@ -135,7 +156,7 @@ func TestReadSamples(t *testing.T) {
 	})
 
 	t.Run("limits to avail", func(t *testing.T) {
-		bl, _ := NewBuffer(blipSize)
+		bl := NewBuffer(blipSize)
 		bl.EndFrame(oversample * 2)
 
 		buf := []int16{-1, -1}
@@ -147,7 +168,7 @@ func TestReadSamples(t *testing.T) {
 	})
 
 	t.Run("limits", func(t *testing.T) {
-		bl, _ := NewBuffer(blipSize)
+		bl := NewBuffer(blipSize)
 		assert(t, bl.ReadSamples(nil, 1, Mono), 0)
 
 		shouldPanic(t, func() { bl.ReadSamples(nil, -1, Mono) })
@@ -158,7 +179,7 @@ func TestSetRates(t *testing.T) {
 	const blipSize = MaxFrame / 2
 
 	t.Run(" ", func(t *testing.T) {
-		bl, _ := NewBuffer(blipSize)
+		bl := NewBuffer(blipSize)
 		bl.SetRates(2, 2)
 		assert(t, bl.ClocksNeeded(10), 10)
 
@@ -170,7 +191,7 @@ func TestSetRates(t *testing.T) {
 	})
 
 	t.Run("rounds sample rate up", func(t *testing.T) {
-		bl, _ := NewBuffer(blipSize)
+		bl := NewBuffer(blipSize)
 		for r := 1; r < 10000; r++ {
 			bl.SetRates(float64(r), 1)
 			assert(t, bl.ClocksNeeded(1) <= r, true)
@@ -179,7 +200,7 @@ func TestSetRates(t *testing.T) {
 
 	t.Run("accuracy", func(t *testing.T) {
 		maxError := 100 // 1%
-		bl, _ := NewBuffer(blipSize)
+		bl := NewBuffer(blipSize)
 
 		for r := blipSize / 2; r < blipSize; r++ {
 			for c := r / 2; c < 8000000; c += c / 32 {
@@ -194,7 +215,7 @@ func TestSetRates(t *testing.T) {
 	})
 
 	t.Run("high accuracy", func(t *testing.T) {
-		bl, _ := NewBuffer(blipSize)
+		bl := NewBuffer(blipSize)
 		bl.SetRates(1000000, blipSize)
 		if bl.ClocksNeeded(blipSize) != 1000000 {
 			t.Skip("skipping because 64-bit int isn't available")
@@ -209,7 +230,7 @@ func TestSetRates(t *testing.T) {
 	})
 
 	t.Run("long-term accuracy", func(t *testing.T) {
-		bl, _ := NewBuffer(blipSize)
+		bl := NewBuffer(blipSize)
 		bl.SetRates(1000000, blipSize)
 		if bl.ClocksNeeded(blipSize) != 1000000 {
 			t.Skip("skipping because 64-bit int isn't available")
@@ -248,7 +269,7 @@ func TestAddDelta(t *testing.T) {
 	const blipSize = MaxFrame / 2
 
 	t.Run("limits", func(t *testing.T) {
-		bl, _ := NewBuffer(blipSize)
+		bl := NewBuffer(blipSize)
 		bl.AddDelta(0, 1)
 		bl.AddDelta((blipSize+3)*oversample-1, 1)
 
@@ -287,7 +308,7 @@ func TestInvariance(t *testing.T) {
 
 		{
 			got := makefill[int16](blipSize, +1)
-			bl, _ := NewBuffer(blipSize)
+			bl := NewBuffer(blipSize)
 			add_deltas(bl, 0)
 			add_deltas(bl, frame_len)
 			bl.EndFrame(frame_len * 2)
@@ -299,7 +320,7 @@ func TestInvariance(t *testing.T) {
 		}
 		{
 			got := makefill[int16](blipSize, -1)
-			bl, _ := NewBuffer(blipSize)
+			bl := NewBuffer(blipSize)
 			add_deltas(bl, 0)
 			bl.EndFrame(frame_len)
 			add_deltas(bl, 0)
@@ -325,7 +346,7 @@ func TestInvariance(t *testing.T) {
 		const blipSize = (frame_len * 3) / oversample
 		out := makefill[int16](blipSize, +1)
 
-		bl, _ := NewBuffer(blipSize)
+		bl := NewBuffer(blipSize)
 		add_deltas(bl, 0*frame_len)
 		add_deltas(bl, 1*frame_len)
 		add_deltas(bl, 2*frame_len)
@@ -342,7 +363,7 @@ func TestInvariance(t *testing.T) {
 		const blipSize = (frame_len * 3) / oversample
 		got := makefill[int16](blipSize, -1)
 
-		bl, _ := NewBuffer(blipSize / 3)
+		bl := NewBuffer(blipSize / 3)
 		count := 0
 
 		for range 3 {
@@ -367,7 +388,7 @@ func TestInvariance(t *testing.T) {
 		two := makefill[int16](blipSize, -1)
 
 		{
-			bl, _ := NewBuffer(blipSize)
+			bl := NewBuffer(blipSize)
 			bl.SetRates(oversample, 1)
 
 			count := 0
@@ -381,7 +402,7 @@ func TestInvariance(t *testing.T) {
 		}
 
 		{
-			bl, _ := NewBuffer(blipSize)
+			bl := NewBuffer(blipSize)
 			bl.SetRates(oversample, 1)
 
 			count := 0
@@ -400,7 +421,7 @@ func TestInvariance(t *testing.T) {
 
 	t.Run("AddDeltaFast ReadSamples", func(t *testing.T) {
 		const blipSize = 32
-		bl, _ := NewBuffer(blipSize)
+		bl := NewBuffer(blipSize)
 
 		bl.AddDeltaFast(2*oversample, +16384)
 		endFrameAndCheckCRC(t, bl, blipSize, 0x7401D8E4)
@@ -412,7 +433,7 @@ func TestInvariance(t *testing.T) {
 	t.Run("tails", func(t *testing.T) {
 		const blipSize = 32
 
-		bl, _ := NewBuffer(blipSize)
+		bl := NewBuffer(blipSize)
 
 		bl.AddDelta(0, +16384)
 		endFrameAndCheckCRC(t, bl, blipSize, 0xCA2F85D1)
@@ -424,7 +445,7 @@ func TestInvariance(t *testing.T) {
 	t.Run("AddDelta interpolation", func(t *testing.T) {
 		const blipSize = 32
 
-		bl, _ := NewBuffer(blipSize)
+		bl := NewBuffer(blipSize)
 
 		bl.AddDelta(oversample/2, +32768)
 		endFrameAndCheckCRC(t, bl, blipSize, 0xFD326B1)
@@ -443,7 +464,7 @@ func TestSaturation(t *testing.T) {
 		t.Helper()
 
 		const blipSize = 32
-		bl, _ := NewBuffer(blipSize)
+		bl := NewBuffer(blipSize)
 
 		bl.AddDeltaFast(0, delta)
 		bl.EndFrame(oversample * blipSize)
@@ -458,7 +479,7 @@ func TestSaturation(t *testing.T) {
 
 func TestStereoInterleave(t *testing.T) {
 	const blipSize = 32
-	bl, _ := NewBuffer(blipSize)
+	bl := NewBuffer(blipSize)
 
 	monobuf := make([]int16, blipSize)
 	bl.AddDelta(0, +16384)
@@ -479,7 +500,7 @@ func TestStereoInterleave(t *testing.T) {
 
 func TestClearSynthesis(t *testing.T) {
 	const blipSize = 32
-	bl, _ := NewBuffer(blipSize)
+	bl := NewBuffer(blipSize)
 
 	// Make first and last internal samples non-zero
 	bl.AddDelta(0, 32768)
