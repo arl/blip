@@ -20,7 +20,7 @@ Examples:
 
 This library is a **pure-go** port of the C library called **blip_buf** by Shay Green (blargg).  
 Here's the original README from the C library, from which blip also kept the
-original license:
+original license (function names are those of the Go library though):
 
 blip_buf
 --------------
@@ -45,24 +45,23 @@ Overview
 This library resamples audio waveforms from input clock rate to output
 sample rate. Usage follows this general pattern:
 
-* Create buffer with blip_new().
-* Set clock rate and sample rate with blip_set_rates().
+* Create buffer with blip.NewBuffer().
+* Set clock rate and sample rate with buf.SetRates().
 * Waveform generation loop:
-	- Generate several clocks of waveform with blip_add_delta().
-	- End time frame with blip_end_frame().
-	- Read samples from buffer with blip_read_samples().
-* Free buffer with blip_delete().
+	- Generate several clocks of waveform with buf.AddDelta().
+	- End time frame with buf.EndFrame().
+	- Read samples from buffer with buf.ReadSamples().
 
 
 Buffer creation
 ---------------
-Before synthesis, a buffer must be created with blip_new(). Its size is
-the maximum number of unread samples it can hold. For most uses, this
-can be 1/10 the sample rate or less, since samples will usually be read
-out immediately after being generated.
+Before synthesis, a buffer must be created with blip.NewBuffer(). Its
+size is the maximum number of unread samples it can hold. For most uses,
+this can be 1/10 the sample rate or less, since samples will usually be
+read out immediately after being generated.
 
 After the buffer is created, the input clock rate and output sample rate
-must be set with blip_set_rates(). This determines how many input clocks
+must be set with buf.SetRates(). This determines how many input clocks
 there are per second, and how many output samples are generated per
 second.
 
@@ -125,13 +124,13 @@ for this square wave are shown below the time points they occur at:
 
 The following calls generate the above waveform:
 
-	blip_add_delta( blip,  4,  +5 );
-	blip_add_delta( blip,  8, -10 );
-	blip_add_delta( blip, 12, +10 );
-	blip_add_delta( blip, 16, -10 );
-	blip_add_delta( blip, 20, +10 );
-	blip_add_delta( blip, 24, -10 );
-	blip_add_delta( blip, 28, +10 );
+	buf.AddDelta(  4,  +5 );
+	buf.AddDelta(  8, -10 );
+	buf.AddDelta( 12, +10 );
+	buf.AddDelta( 16, -10 );
+	buf.AddDelta( 20, +10 );
+	buf.AddDelta( 24, -10 );
+	buf.AddDelta( 28, +10 );
 
 In the examples above, the amplitudes are small for clarity. The 16-bit
 sample range is -32768 to +32767, so actual waveform amplitudes would
@@ -170,20 +169,20 @@ frames of 10 clocks each looks like this:
 
 The following calls generate the above waveform. After they execute, the
 first 30 clocks of the waveform will have been resampled and be
-available as output samples for reading with blip_read_samples().
+available as output samples for reading with buf.ReadSamples().
 
-	blip_add_delta( blip,  4,  +5 );
-	blip_add_delta( blip,  8, -10 );
-	blip_end_frame( blip, 10 );
+	buf.AddDelta( 4,  +5 );
+	buf.AddDelta( 8, -10 );
+	buf.EndFrame( 10 );
 	
-	blip_add_delta( blip,  2, +10 );
-	blip_add_delta( blip,  6, -10 );
-	blip_end_frame( blip, 10 );
+	buf.AddDelta( 2, +10 );
+	buf.AddDelta( 6, -10 );
+	buf.EndFrame( 10 );
 	
-	blip_add_delta( blip,  0, +10 );
-	blip_add_delta( blip,  4, -10 );
-	blip_add_delta( blip,  8, +10 );
-	blip_end_frame( blip, 10 );
+	buf.AddDelta( 0, +10 );
+	buf.AddDelta( 4, -10 );
+	buf.AddDelta( 8, +10 );
+	buf.EndFrame( 10 );
 	...
 
 Time frames can be a convenient length, and the length can vary from one
@@ -218,13 +217,13 @@ example, a saw-like wave:
 
 Code to generate above waveform:
 
-	blip_add_delta( blip,  4,  +5 );
-	blip_add_delta( blip,  8, -10 );
-	blip_add_delta( blip, 12,  +5 );
-	blip_add_delta( blip, 16,  +5 );
-	blip_add_delta( blip, 20, +10 );
-	blip_add_delta( blip, 24,  +5 );
-	blip_add_delta( blip, 28,  +5 );
+	buf.AddDelta(  4,  +5 );
+	buf.AddDelta(  8, -10 );
+	buf.AddDelta( 12,  +5 );
+	buf.AddDelta( 16,  +5 );
+	buf.AddDelta( 20, +10 );
+	buf.AddDelta( 24,  +5 );
+	buf.AddDelta( 28,  +5 );
 
 Similarly, multiple waveforms can be added within a time frame without
 problem. It doesn't matter what order they're added, because all the
@@ -238,7 +237,7 @@ Sample buffering
 ----------------
 Sample buffering is very flexible. Once a time frame is ended, the
 resampled waveforms become output samples that are immediately made
-available for reading with blip_read_samples(). They don't have to be
+available for reading with buf.ReadSamples(). They don't have to be
 read immediately; they can be allowed to accumulate in the buffer, with
 each time frame appending more samples to the buffer. When reading, some
 or all of the samples in can be read out, with the remaining unread
@@ -251,7 +250,7 @@ even if slightly more were available in the buffer.
 
 In some systems, one wants to run waveform generation for exactly the
 number of clocks necessary to generate some desired number of output
-samples, and no more. In that case, use blip_clocks_needed( blip, N ) to
+samples, and no more. In that case, use buf.ClocksNeeded( N ) to
 find out how many clocks are needed to generate N additional samples.
 Ending a time frame with this value will result in exactly N more
 samples becoming available for reading.
