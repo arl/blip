@@ -21,8 +21,19 @@ jobs:
       with:
         go-version-file: 'go.mod'
 
+    - name: Dependencies
+      run: >-
+        sudo apt-get update &&
+        sudo apt-get install
+        gcc
+        pkg-config
+        libsdl2-dev
+
     - name: Build
       run: go build -v ./...
 
     - name: Test
       run: go test -v ./...
+
+    - name: Examples
+      run: make examples

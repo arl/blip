@@ -1,5 +1,9 @@
 github.com/arl/blip v0.0.0-20241110160245-78f8877b4c66 h1:n3T/wtsVaJgvpyvA1mg32Tcof/CMvAZKILQd3XzcEkw=
 github.com/arl/blip v0.0.0-20241110160245-78f8877b4c66/go.mod h1:CHmVA3E+UQd4VD9wZPTs8vcTbcEovXZwNehiF/Ji0Oc=
+github.com/arl/blip v0.0.1 h1:mTTHZkZqahC1mpTeDvqeAzbXluiQ2ZXW+B4ifQY/92g=
+github.com/arl/blip v0.0.1/go.mod h1:60h+V+JABRLooo6HbBxQsp8qSK38+7KixmT4f1YRxDo=
+github.com/arl/blip v0.0.2-0.20241111202214-db7d733f7922 h1:meWdjQSbo1ejqxsu9aBWZUVExcOlfmWD708RnMbjK/U=
+github.com/arl/blip v0.0.2-0.20241111202214-db7d733f7922/go.mod h1:60h+V+JABRLooo6HbBxQsp8qSK38+7KixmT4f1YRxDo=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
 github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
 github.com/veandco/go-sdl2 v0.4.40 h1:fZv6wC3zz1Xt167P09gazawnpa0KY5LM7JAvKpX9d/U=

@@ -65,7 +65,7 @@ func genSamples(out []int16) {
 func initSound() {
 	// Create left and right delta buffers
 	for i := range 2 {
-		blips[i], _ = blip.NewBuffer(sampleRate / 10)
+		blips[i] = blip.NewBuffer(sampleRate / 10)
 		waves[i].bl = blips[i]
 		blips[i].SetRates(clockRate, sampleRate)
 	}

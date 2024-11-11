@@ -7,14 +7,14 @@ Blip is a low-level audio Go library to resample audio waveforms from input cloc
 
 Examples:
 
-| Package              | Description                                   |
-| ---------------------|-----------------------------------------------|
-| [demo](./examples/demo/main.go)        | Generates square wave sweep                   |
-| [demo_stereo](./examples/demo_stereo/main.go) | Generates stereo sound using two blip buffers |
-| [demo_fixed](./examples/demo_fixed/main.go) | Works in fixed-point time rather than clocks  |
-| [demo_sdl](./examples/demo_sdl/main.go)    | Plays sound live using SDL multimedia library |
-| [demo_chip](./examples/demo_chip/main.go)   | Emulates sound hardware and plays back log.txt|
-| [wave](./wave/wave.go)                 | Simple package demonstrating a wave sound file write, used by demos   |
+| Package                                       | Description                                                           |
+|-----------------------------------------------|-----------------------------------------------------------------------|
+| [demo_basic](./examples/demo_basic/main.go)   | Generates square wave sweep                                           |
+| [demo_stereo](./examples/demo_stereo/main.go) | Generates stereo sound using two blip buffers                         |
+| [demo_fixed](./examples/demo_fixed/main.go)   | Works in fixed-point time rather than clocks                          |
+| [demo_sdl](./examples/demo_sdl/main.go)       | Plays sound live using SDL multimedia library                         |
+| [demo_chip](./examples/demo_chip/main.go)     | Emulates sound hardware and plays back log.txt                        |
+| [wave](./wave/wave.go)                        | Simple package demonstrating a wave sound file write, used by demos   |
 
 
 

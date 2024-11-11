@@ -118,11 +118,11 @@ func endFrame(endTime int) {
 	}
 }
 
-//go:embed chipLog.txt
+//go:embed chip_log.txt
 var chipLog []byte
 
 func main() {
-	bl := blip.NewBuffer(sampleRate / 10)
+	bl = blip.NewBuffer(sampleRate / 10)
 	bl.SetRates(clockRate, sampleRate)
 
 	// Play back logged writes and record to wave sound file

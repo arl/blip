@@ -68,7 +68,7 @@ func genSamples(out []int16) {
 }
 
 func main() {
-	bl := blip.NewBuffer(sampleRate / 10)
+	bl = blip.NewBuffer(sampleRate / 10)
 	bl.SetRates(clockRate, sampleRate)
 
 	w, err := wave.NewFile("out.wav", sampleRate)

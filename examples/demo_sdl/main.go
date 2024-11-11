@@ -57,7 +57,7 @@ func genSamples(out []int16) {
 	clocks := bl.ClocksNeeded(len(out))
 	runWave(&waves[0], clocks)
 	runWave(&waves[1], clocks)
-	bl.EndFrame(uint(clocks))
+	bl.EndFrame(clocks)
 
 	bl.ReadSamples(out, len(out), blip.Mono)
 }
@@ -71,12 +71,7 @@ func main() {
 	waves[1].volume = 0.2
 	waves[1].phase = 1
 
-	var err error
-	bl, err = blip.NewBuffer(sampleRate / 10)
-	if err != nil {
-		log.Fatal(err)
-	}
-
+	bl = blip.NewBuffer(sampleRate / 10)
 	bl.SetRates(clockRate, sampleRate)
 
 	// setup SDL
