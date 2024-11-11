@@ -9,12 +9,12 @@ Examples:
 
 | Package              | Description                                   |
 | ---------------------|-----------------------------------------------|
-| examples/demo        | Generates square wave sweep                   |
-| examples/demo_stereo | Generates stereo sound using two blip buffers |
-| examples/demo_fixed  | Works in fixed-point time rather than clocks  |
-| examples/demo_sdl    | Plays sound live using SDL multimedia library |
-| examples/demo_chip   | Emulates sound hardware and plays back log.txt|
-| wave                 | Simple wave sound file writer used by demos   |
+| [demo](./examples/demo/main.go)        | Generates square wave sweep                   |
+| [demo_stereo](./examples/demo_stereo/main.go) | Generates stereo sound using two blip buffers |
+| [demo_fixed](./examples/demo_fixed/main.go) | Works in fixed-point time rather than clocks  |
+| [demo_sdl](./examples/demo_sdl/main.go)    | Plays sound live using SDL multimedia library |
+| [demo_chip](./examples/demo_chip/main.go)   | Emulates sound hardware and plays back log.txt|
+| [wave](./wave/wave.go)                 | Simple package demonstrating a wave sound file write, used by demos   |
 
 
 
