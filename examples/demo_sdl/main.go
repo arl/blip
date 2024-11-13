@@ -7,7 +7,6 @@ package main
 // void FillBuffer(void *userdata, Uint8 *stream, int len);
 import "C"
 import (
-	"fmt"
 	"log"
 	"unsafe"
 
@@ -104,8 +103,6 @@ func main() {
 		log.Fatal(err)
 	}
 	sdl.PauseAudio(false)
-
-	fmt.Println("start polling")
 
 pollLoop:
 	for {
