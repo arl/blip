@@ -1,3 +1,5 @@
+SHELL=/bin/sh
+
 demo_%:
 	(cd examples/demo_$* && go build && ./demo_$(*) && diff out.wav ../../testdata/demo_$*/out.wav)
 
