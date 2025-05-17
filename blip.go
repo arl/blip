@@ -168,13 +168,19 @@ func (b *Buffer) ReadSamples(out []int16, count int, stereo bool) int {
 		count = b.avail
 	}
 
-	if count == 0 {
-		return 0
-	}
-
 	step := 2
 	if !stereo {
 		step = 1
+	}
+
+	// Cap the number of samples as ceil(len(out)/step). Ceil takes care of odd
+	// number of samples in stereo mode.
+	if maxout := (len(out) + step - 1) / step; count > maxout {
+		count = maxout
+	}
+
+	if count == 0 {
+		return 0
 	}
 
 	sum := b.integrator
@@ -182,6 +188,7 @@ func (b *Buffer) ReadSamples(out []int16, count int, stereo bool) int {
 		// Eliminate fraction
 		s := sum >> deltaBits
 		sum += int(b.samples[idx])
+
 		out[idx*step] = int16(clamp(s))
 
 		// High-pass filter
