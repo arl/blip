@@ -168,26 +168,27 @@ func (b *Buffer) ReadSamples(out []int16, count int, stereo bool) int {
 		count = b.avail
 	}
 
-	if count != 0 {
-		step := 2
-		if !stereo {
-			step = 1
-		}
-
-		sum := b.integrator
-		for idx := range b.samples[:count] {
-			// Eliminate fraction
-			s := sum >> deltaBits
-			sum += int(b.samples[idx])
-			out[idx*step] = int16(clamp(s))
-
-			// High-pass filter
-			sum -= s << (deltaBits - bassShift)
-		}
-		b.integrator = sum
-		b.removeSamples(count)
+	if count == 0 {
+		return 0
 	}
 
+	step := 2
+	if !stereo {
+		step = 1
+	}
+
+	sum := b.integrator
+	for idx := range b.samples[:count] {
+		// Eliminate fraction
+		s := sum >> deltaBits
+		sum += int(b.samples[idx])
+		out[idx*step] = int16(clamp(s))
+
+		// High-pass filter
+		sum -= s << (deltaBits - bassShift)
+	}
+	b.integrator = sum
+	b.removeSamples(count)
 	return count
 }
 
