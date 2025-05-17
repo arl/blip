@@ -172,6 +172,16 @@ func TestReadSamples(t *testing.T) {
 
 		shouldPanic(t, func() { bl.ReadSamples(nil, -1, Mono) })
 	})
+
+	t.Run("cap read samples to outbuf", func(t *testing.T) {
+		const blipSize = 3200
+		bl := NewBuffer(blipSize)
+		// generate exactly 1 609 stereo frames worth of samples
+		bl.EndFrame(oversample * 1609)
+		var outbuf [blipSize]int16
+		n := bl.ReadSamples(outbuf[:], blipSize, Stereo)
+		assert(t, n, 1600)
+	})
 }
 
 func TestSetRates(t *testing.T) {
