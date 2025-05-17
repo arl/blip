@@ -129,7 +129,7 @@ func (b *Buffer) ClocksNeeded(nsamples int) int {
 // output samples. Also begins new time frame at clockDuration, so that clock
 // time 0 in the new time frame specifies the same clock as clockDuration in the
 // old time frame specified. Deltas can have been added slightly past
-// clockDuration (up to however many clocks there are in two output samples).
+// clockDuration (up to how many clocks there are in two output samples).
 func (b *Buffer) EndFrame(clockDuration int) {
 	off := uint64(clockDuration)*b.factor + b.offset
 	b.avail += int(off >> timeBits)
