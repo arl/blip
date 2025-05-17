@@ -36,8 +36,7 @@ func TestAssumptions(t *testing.T) {
 		t.Fatalf("right shift must preserve sign")
 	}
 
-	var n int
-	n = maxSample * 2
+	n := maxSample * 2
 	n = clamp(n)
 
 	if n != maxSample {
@@ -312,6 +311,7 @@ func TestInvariance(t *testing.T) {
 			add_deltas(bl, 0)
 			add_deltas(bl, frame_len)
 			bl.EndFrame(frame_len * 2)
+
 			assert(t, bl.ReadSamples(got, blipSize, Mono), blipSize)
 
 			if diff := cmp.Diff(got, want); diff != "" {
@@ -325,7 +325,9 @@ func TestInvariance(t *testing.T) {
 			bl.EndFrame(frame_len)
 			add_deltas(bl, 0)
 			bl.EndFrame(frame_len)
+
 			assert(t, bl.ReadSamples(got, blipSize, Mono), blipSize)
+
 			if diff := cmp.Diff(got, want); diff != "" {
 				t.Errorf("response mismatch (-got +want):\n%s", diff)
 			}
@@ -423,10 +425,10 @@ func TestInvariance(t *testing.T) {
 		const blipSize = 32
 		bl := NewBuffer(blipSize)
 
-		bl.AddDeltaFast(2*oversample, +16384)
+		bl.AddDeltaFast(2*oversample, 16384)
 		endFrameAndCheckCRC(t, bl, blipSize, 0x7401D8E4)
 
-		bl.AddDeltaFast(uint64(int(2.5*oversample)), +16384)
+		bl.AddDeltaFast(uint64(int(2.5*oversample)), 16384)
 		endFrameAndCheckCRC(t, bl, blipSize, 0x17E3745D)
 	})
 
@@ -451,10 +453,10 @@ func TestInvariance(t *testing.T) {
 		endFrameAndCheckCRC(t, bl, blipSize, 0xFD326B1)
 
 		// Values should be half-way between values for above and below
-		bl.AddDelta(oversample/2+oversample/64, +32768)
+		bl.AddDelta(oversample/2+oversample/64, 32768)
 		endFrameAndCheckCRC(t, bl, blipSize, 0x7CB83EFD)
 
-		bl.AddDelta(oversample/2+oversample/32, +32768)
+		bl.AddDelta(oversample/2+oversample/32, 32768)
 		endFrameAndCheckCRC(t, bl, blipSize, 0xD8864668)
 	})
 }
@@ -473,7 +475,7 @@ func TestSaturation(t *testing.T) {
 		assert(t, buf[20], want)
 	}
 
-	test(+35000, +32767)
+	test(35000, 32767)
 	test(-35000, -32768)
 }
 
