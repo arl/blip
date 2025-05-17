@@ -44,13 +44,6 @@ const (
 	MaxFrame = 4000
 )
 
-// Unsigned is a constraint that permits any unsigned integer type.
-// If future releases of Go add new predeclared unsigned integer types,
-// this constraint will be modified to include them.
-type unsigned interface {
-	~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr
-}
-
 func clamp[T ~int | ~int32 | ~int64](n T) T {
 	if T(int16(n)) != n {
 		n = (n >> 16) ^ T(maxSample)
