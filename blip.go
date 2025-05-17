@@ -37,7 +37,7 @@ const (
 
 const (
 	// Maximum clockRate/sampleRate ratio. For a given sampleRate,
-	// lockRate must not be greater than sampleRate*MaxRatio.
+	// clockRate must not be greater than sampleRate*MaxRatio.
 	MaxRatio = 1 << 20
 
 	// Maximum number of samples that can be generated from one time frame.
